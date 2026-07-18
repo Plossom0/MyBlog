@@ -1,0 +1,40 @@
+# 依赖与构建产物
+node_modules
+dist
+dist-ssr
+*.local
+
+# 环境变量（含密钥）
+.env
+.env.*
+
+# 数据库（SQLite，WAL 模式）
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# 上传内容（保留目录占位）
+uploads/*
+!uploads/.gitkeep
+
+# 构建缓存
+*.tsbuildinfo
+
+# 日志
+*.log
+
+# 测试覆盖率
+coverage/
+
+# IDE
+.vscode/
+.idea/
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Trae
+.trae/
