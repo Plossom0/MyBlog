@@ -12,7 +12,7 @@ export default function NotFoundPage() {
         to="/"
         className="font-mono text-sm text-clay hover:underline underline-offset-4"
       >
-        ← 回到 <img src="/uploads/username.png" alt="Su777" className="inline-block h-[1em] align-middle" /> 的博客
+        ← 回到 Su777 的博客
       </Link>
     </div>
   )

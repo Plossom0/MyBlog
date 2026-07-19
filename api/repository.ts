@@ -1,5 +1,5 @@
 import { db } from './db'
-import type { PostMeta, PostSearchResult, TagWithCount } from '../shared/types'
+import type { PostMeta, PostSearchResult, TagWithCount, CategoryWithCount } from '../shared/types'
 
 // ============ 文章查询 ============
 
@@ -9,6 +9,8 @@ interface PostRow {
   content: string
   excerpt: string | null
   cover_image_url: string | null
+  category: string | null
+  public: number
   created_at: string
   updated_at: string
 }
@@ -18,15 +20,19 @@ export function insertPost(data: {
   content: string
   excerpt?: string | null
   cover_image_url?: string | null
+  category?: string | null
+  public?: boolean
 }): number {
   const stmt = db.prepare(
-    `INSERT INTO posts (title, content, excerpt, cover_image_url) VALUES (?, ?, ?, ?)`,
+    `INSERT INTO posts (title, content, excerpt, cover_image_url, category, public) VALUES (?, ?, ?, ?, ?, ?)`,
   )
   const result = stmt.run(
     data.title,
     data.content,
     data.excerpt ?? null,
     data.cover_image_url ?? null,
+    data.category ?? null,
+    data.public === false ? 0 : 1,
   )
   return result.lastInsertRowid as number
 }
@@ -38,10 +44,12 @@ export function updatePost(
     content: string
     excerpt?: string | null
     cover_image_url?: string | null
+    category?: string | null
+    public?: boolean
   },
 ): boolean {
   const stmt = db.prepare(
-    `UPDATE posts SET title = ?, content = ?, excerpt = ?, cover_image_url = ?,
+    `UPDATE posts SET title = ?, content = ?, excerpt = ?, cover_image_url = ?, category = ?, public = ?,
      updated_at = datetime('now') WHERE id = ?`,
   )
   const result = stmt.run(
@@ -49,6 +57,8 @@ export function updatePost(
     data.content,
     data.excerpt ?? null,
     data.cover_image_url ?? null,
+    data.category ?? null,
+    data.public === false ? 0 : 1,
     id,
   )
   return result.changes > 0
@@ -68,45 +78,59 @@ export function getPostById(id: number): PostRow | undefined {
     .get(id) as PostRow | undefined
 }
 
-export function getAllPostIds(): { id: number }[] {
+export function getAllPostIds(publicOnly = false): { id: number }[] {
+  const cond = publicOnly ? `AND public = 1` : ``
   return db
     .prepare(
-      `SELECT id FROM posts WHERE deleted_at IS NULL ORDER BY created_at DESC`,
+      `SELECT id FROM posts WHERE deleted_at IS NULL ${cond} ORDER BY created_at DESC`,
     )
     .all() as { id: number }[]
 }
 
-export function getPostsByTag(tagName: string): { id: number }[] {
+export function getPostsByTag(tagName: string, publicOnly = false): { id: number }[] {
+  const cond = publicOnly ? `AND p.public = 1` : ``
   return db
     .prepare(
       `SELECT p.id FROM posts p
        JOIN post_tags pt ON pt.post_id = p.id
        JOIN tags t ON t.id = pt.tag_id
-       WHERE t.name = ? AND p.deleted_at IS NULL
+       WHERE t.name = ? AND p.deleted_at IS NULL ${cond}
        ORDER BY p.created_at DESC`,
     )
     .all(tagName) as { id: number }[]
 }
 
-export function searchPostIds(query: string): { id: number }[] {
+export function getPostsByCategory(category: string, publicOnly = false): { id: number }[] {
+  const cond = publicOnly ? `AND public = 1` : ``
+  return db
+    .prepare(
+      `SELECT id FROM posts WHERE category = ? AND deleted_at IS NULL ${cond} ORDER BY created_at DESC`,
+    )
+    .all(category) as { id: number }[]
+}
+
+export function searchPostIds(query: string, publicOnly = false): { id: number }[] {
   const ftsQuery = query.split(/\s+/).filter(Boolean).join(' ')
   if (!ftsQuery) return []
+
+  const pubCond = publicOnly ? `AND public = 1` : ``
 
   // 短查询（<3 字符）trigram 无法匹配，降级为 LIKE
   const charLen = [...query].length
   if (charLen < 3) {
     return db
       .prepare(
-        `SELECT id FROM posts WHERE (title LIKE ? OR content LIKE ?) AND deleted_at IS NULL ORDER BY created_at DESC`,
+        `SELECT id FROM posts WHERE (title LIKE ? OR content LIKE ?) AND deleted_at IS NULL ${pubCond} ORDER BY created_at DESC`,
       )
       .all(`%${query}%`, `%${query}%`) as { id: number }[]
   }
 
+  const pubCondFts = publicOnly ? `AND p.public = 1` : ``
   return db
     .prepare(
       `SELECT f.rowid as id FROM posts_fts f
        JOIN posts p ON p.id = f.rowid
-       WHERE f.posts_fts MATCH ? AND p.deleted_at IS NULL
+       WHERE f.posts_fts MATCH ? AND p.deleted_at IS NULL ${pubCondFts}
        ORDER BY rank`,
     )
     .all(ftsQuery) as { id: number }[]
@@ -158,8 +182,8 @@ function makeSnippet(content: string, terms: string[]): string | null {
   return plain.slice(start, end)
 }
 
-export function searchPostsWithSnippet(query: string): PostSearchResult[] {
-  const ids = searchPostIds(query)
+export function searchPostsWithSnippet(query: string, publicOnly = false): PostSearchResult[] {
+  const ids = searchPostIds(query, publicOnly)
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
   const stmt = db.prepare(
     `SELECT * FROM posts WHERE id = ? AND deleted_at IS NULL`,
@@ -209,17 +233,30 @@ export function getTagsForPost(postId: number): string[] {
   return rows.map((r) => r.name)
 }
 
-export function getAllTagsWithCount(): TagWithCount[] {
+export function getAllTagsWithCount(publicOnly = false): TagWithCount[] {
+  const pubCond = publicOnly ? `AND p.public = 1` : ``
   return db
     .prepare(
       `SELECT t.name as name, COUNT(p.id) as count FROM tags t
        LEFT JOIN post_tags pt ON pt.tag_id = t.id
-       LEFT JOIN posts p ON p.id = pt.post_id AND p.deleted_at IS NULL
+       LEFT JOIN posts p ON p.id = pt.post_id AND p.deleted_at IS NULL ${pubCond}
        GROUP BY t.id, t.name
        HAVING COUNT(p.id) > 0
        ORDER BY count DESC, t.name ASC`,
     )
     .all() as TagWithCount[]
+}
+
+export function getAllCategoriesWithCount(publicOnly = false): CategoryWithCount[] {
+  const pubCond = publicOnly ? `AND public = 1` : ``
+  return db
+    .prepare(
+      `SELECT category as name, COUNT(*) as count FROM posts
+       WHERE category IS NOT NULL AND category != '' AND deleted_at IS NULL ${pubCond}
+       GROUP BY category
+       ORDER BY count DESC, category ASC`,
+    )
+    .all() as CategoryWithCount[]
 }
 
 // ============ 组装带标签的文章元数据 ============
@@ -230,6 +267,8 @@ export function buildPostMeta(row: PostRow): PostMeta {
     title: row.title,
     excerpt: row.excerpt ?? makeExcerpt(row.content),
     cover_image_url: row.cover_image_url,
+    category: row.category,
+    public: !!row.public,
     created_at: row.created_at,
     updated_at: row.updated_at,
     tags: getTagsForPost(row.id),

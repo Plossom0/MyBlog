@@ -19,7 +19,7 @@ export default function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder="搜索文章标题与正文…"
         className="w-full bg-transparent border-0 border-b border-line pl-7 pr-2 py-2
-          font-serif text-base text-ink placeholder:text-muted/60
+          font-article text-base text-ink placeholder:text-muted/60
           focus:outline-none focus:border-clay transition-colors"
       />
     </div>

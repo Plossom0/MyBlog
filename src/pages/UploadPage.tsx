@@ -9,6 +9,8 @@ export default function UploadPage() {
     title: string
     content: string
     tags: string[]
+    category: string | null
+    public: boolean
     excerpt: string | null
   }) {
     // 将编辑后的正文构造为 md 文件上传
@@ -17,6 +19,8 @@ export default function UploadPage() {
       file,
       title: data.title,
       tags: data.tags,
+      category: data.category ?? undefined,
+      public: data.public,
       excerpt: data.excerpt ?? undefined,
     })
     navigate(`/posts/${id}`)

@@ -24,6 +24,8 @@ export function initDb(): void {
       content TEXT NOT NULL,
       excerpt TEXT,
       cover_image_url TEXT,
+      category TEXT,
+      public INTEGER NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
       deleted_at TEXT
@@ -69,11 +71,32 @@ export function initDb(): void {
 
     CREATE INDEX IF NOT EXISTS idx_post_tags_post_id ON post_tags(post_id);
     CREATE INDEX IF NOT EXISTS idx_post_tags_tag_id ON post_tags(tag_id);
+
+    -- 超级管理员表（单例：固定 id=1）
+    CREATE TABLE IF NOT EXISTS admin (
+      id INTEGER PRIMARY KEY CHECK (id = 1),
+      username TEXT,
+      password_md5 TEXT,
+      session_token TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `)
+
+  // 种入超级管理员单例行（用户名和密码初始为空，需在网站首次设置）
+  db.prepare(
+    `INSERT OR IGNORE INTO admin (id) VALUES (1)`,
+  ).run()
 
   // 软删除字段迁移（兼容已有数据库）
   const cols = db.prepare('PRAGMA table_info(posts)').all() as { name: string }[]
   if (!cols.some((c) => c.name === 'deleted_at')) {
     db.exec('ALTER TABLE posts ADD COLUMN deleted_at TEXT')
+  }
+  if (!cols.some((c) => c.name === 'category')) {
+    db.exec('ALTER TABLE posts ADD COLUMN category TEXT')
+  }
+  if (!cols.some((c) => c.name === 'public')) {
+    db.exec('ALTER TABLE posts ADD COLUMN public INTEGER NOT NULL DEFAULT 1')
   }
 }

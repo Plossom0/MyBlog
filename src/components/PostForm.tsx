@@ -6,6 +6,8 @@ import { uploadImage } from '../utils/api'
 interface PostFormProps {
   initialTitle?: string
   initialTags?: string[]
+  initialCategory?: string | null
+  initialPublic?: boolean
   initialExcerpt?: string | null
   initialContent?: string
   submitLabel: string
@@ -13,6 +15,8 @@ interface PostFormProps {
     title: string
     content: string
     tags: string[]
+    category: string | null
+    public: boolean
     excerpt: string | null
   }) => Promise<void>
 }
@@ -21,6 +25,7 @@ interface PostFormProps {
 function parseFrontmatter(raw: string): {
   title?: string
   tags?: string[]
+  category?: string
   excerpt?: string
   content: string
 } {
@@ -28,7 +33,7 @@ function parseFrontmatter(raw: string): {
   if (!match) return { content: raw }
   const yaml = match[1]
   const content = raw.slice(match[0].length)
-  const result: { title?: string; tags?: string[]; excerpt?: string; content: string } = {
+  const result: { title?: string; tags?: string[]; category?: string; excerpt?: string; content: string } = {
     content,
   }
   for (const line of yaml.split('\n')) {
@@ -43,7 +48,7 @@ function parseFrontmatter(raw: string): {
         .map((s) => s.trim().replace(/^["']|["']$/g, ''))
         .filter(Boolean)
     }
-    if (key === 'title' || key === 'excerpt') {
+    if (key === 'title' || key === 'excerpt' || key === 'category') {
       result[key] = val as string
     } else if (key === 'tags') {
       result.tags = val as string[]
@@ -55,6 +60,8 @@ function parseFrontmatter(raw: string): {
 export default function PostForm({
   initialTitle = '',
   initialTags = [],
+  initialCategory = '',
+  initialPublic = true,
   initialExcerpt = '',
   initialContent = '',
   submitLabel,
@@ -62,6 +69,8 @@ export default function PostForm({
 }: PostFormProps) {
   const [title, setTitle] = useState(initialTitle)
   const [tags, setTags] = useState(initialTags.join(', '))
+  const [category, setCategory] = useState(initialCategory ?? '')
+  const [isPublic, setIsPublic] = useState(initialPublic)
   const [excerpt, setExcerpt] = useState(initialExcerpt ?? '')
   const [content, setContent] = useState(initialContent)
   const [submitting, setSubmitting] = useState(false)
@@ -80,6 +89,7 @@ export default function PostForm({
       const parsed = parseFrontmatter(raw)
       if (parsed.title) setTitle(parsed.title)
       if (parsed.tags) setTags(parsed.tags.join(', '))
+      if (parsed.category) setCategory(parsed.category)
       if (parsed.excerpt) setExcerpt(parsed.excerpt)
       setContent(parsed.content)
       setInfo(`已导入 ${file.name}`)
@@ -133,6 +143,8 @@ export default function PostForm({
           .split(',')
           .map((t) => t.trim())
           .filter(Boolean),
+        category: category.trim() || null,
+        public: isPublic,
         excerpt: excerpt.trim() || null,
       })
     } catch (err) {
@@ -146,7 +158,7 @@ export default function PostForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* 标题 */}
       <div>
-        <label className="block font-mono text-[10px] uppercase tracking-[0.25em] text-muted mb-2">
+        <label className="block font-article text-sm font-medium text-ink/70 mb-2">
           标题
         </label>
         <input
@@ -160,36 +172,70 @@ export default function PostForm({
         />
       </div>
 
-      {/* 标签 + 摘要 */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
-          <label className="block font-mono text-[10px] uppercase tracking-[0.25em] text-muted mb-2">
-            标签（逗号分隔）
-          </label>
+      {/* 算法标签 */}
+      <div>
+        <label className="block font-article text-sm font-medium text-ink/70 mb-2">
+          算法标签（逗号分隔，可多个）
+        </label>
+        <input
+          type="text"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+          placeholder="DP, 图论, 贪心"
+          className="w-full bg-transparent border-b border-line py-1.5
+            font-serif text-base text-ink placeholder:text-muted/40
+            focus:outline-none focus:border-clay transition-colors"
+        />
+      </div>
+
+      {/* 分类 */}
+      <div>
+        <label className="block font-article text-sm font-medium text-ink/70 mb-2">
+          分类（仅一个）
+        </label>
+        <input
+          type="text"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="算法·理论"
+          className="w-full bg-transparent border-b border-line py-1.5
+            font-serif text-base text-ink placeholder:text-muted/40
+            focus:outline-none focus:border-clay transition-colors"
+        />
+      </div>
+
+      {/* 摘要 */}
+      <div>
+        <label className="block font-article text-sm font-medium text-ink/70 mb-2">
+          摘要（可选）
+        </label>
+        <input
+          type="text"
+          value={excerpt}
+          onChange={(e) => setExcerpt(e.target.value)}
+          placeholder="一句话概述…"
+          className="w-full bg-transparent border-b border-line py-1.5
+            font-serif text-base text-ink placeholder:text-muted/40
+            focus:outline-none focus:border-clay transition-colors"
+        />
+      </div>
+
+      {/* 公众可见 */}
+      <div>
+        <label className="flex items-center gap-2 cursor-pointer select-none">
           <input
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="随笔, 技术, 笔记"
-            className="w-full bg-transparent border-b border-line py-1.5
-              font-serif text-base text-ink placeholder:text-muted/40
-              focus:outline-none focus:border-clay transition-colors"
+            type="checkbox"
+            checked={isPublic}
+            onChange={(e) => setIsPublic(e.target.checked)}
+            className="w-4 h-4 accent-[#9c3dcf]"
           />
-        </div>
-        <div>
-          <label className="block font-mono text-[10px] uppercase tracking-[0.25em] text-muted mb-2">
-            摘要（可选）
-          </label>
-          <input
-            type="text"
-            value={excerpt}
-            onChange={(e) => setExcerpt(e.target.value)}
-            placeholder="一句话概述…"
-            className="w-full bg-transparent border-b border-line py-1.5
-              font-serif text-base text-ink placeholder:text-muted/40
-              focus:outline-none focus:border-clay transition-colors"
-          />
-        </div>
+          <span className="font-article text-sm font-medium text-ink/70">
+            公众可见
+          </span>
+          <span className="font-article text-xs text-muted">
+            （取消勾选后仅登录用户可查看）
+          </span>
+        </label>
       </div>
 
       {/* 工具栏 */}
@@ -231,7 +277,7 @@ export default function PostForm({
 
       {/* 正文编辑区 */}
       <div>
-        <label className="block font-mono text-[10px] uppercase tracking-[0.25em] text-muted mb-2">
+        <label className="block font-article text-sm font-medium text-ink/70 mb-2">
           正文（Markdown）
         </label>
         <textarea

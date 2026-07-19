@@ -50,31 +50,37 @@ export default function PostCard({
     >
       <Link to={`/posts/${post.id}`} className="block">
         <div className="flex items-baseline gap-3 mb-2">
-          <span className="font-mono text-sm text-muted">
+          <span className="font-article text-sm text-muted">
             #{String(post.id).padStart(3, '0')}
           </span>
-          <time className="font-mono text-sm text-muted">
+          <time className="font-article text-sm text-muted">
             {formatDate(post.created_at)}
           </time>
         </div>
-        <h2 className="font-title-zh font-semibold text-2xl md:text-[1.75rem] text-ink leading-tight mb-3 group-hover:text-clay transition-colors duration-200">
+        <h2 className="font-article font-semibold text-2xl md:text-[1.75rem] text-ink leading-tight mb-3 group-hover:text-clay transition-colors duration-200">
+          {!post.public && <span className="mr-1.5">🔒</span>}
           {q ? <Highlight text={post.title} query={q} /> : post.title}
         </h2>
         {snippet ? (
-          <p className="text-ink/70 leading-relaxed mb-3">
+          <p className="font-article text-ink/70 leading-relaxed mb-3">
             <span className="text-muted/40">… </span>
             <Highlight text={snippet} query={q} />
             <span className="text-muted/40"> …</span>
           </p>
         ) : post.excerpt ? (
-          <p className="excerpt-fade text-ink/70 leading-relaxed mb-3">
+          <p className="font-article excerpt-fade text-ink/70 leading-relaxed mb-3">
             {q ? <Highlight text={post.excerpt} query={q} /> : post.excerpt}
           </p>
         ) : null}
-        {post.tags.length > 0 && (
+        {(post.category || post.tags.length > 0) && (
           <div className="flex flex-wrap gap-1.5">
+            {post.category && (
+              <span className="tag-chip tag-category">
+                {post.category}
+              </span>
+            )}
             {post.tags.map((t) => (
-              <span key={t} className="tag-chip">
+              <span key={t} className="tag-chip tag-algo">
                 #{t}
               </span>
             ))}

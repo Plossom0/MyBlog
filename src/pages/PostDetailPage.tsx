@@ -7,6 +7,7 @@ import { formatDate } from '../utils/format'
 import MarkdownRenderer from '../components/MarkdownRenderer'
 import Toc from '../components/Toc'
 import { useToc } from '../hooks/useToc'
+import { useAuth } from '../utils/auth'
 
 export default function PostDetailPage() {
   const { id } = useParams()
@@ -30,7 +31,18 @@ export default function PostDetailPage() {
       .finally(() => setLoading(false))
   }, [id])
 
+  // 浏览器标签页显示文章标题
+  useEffect(() => {
+    if (post) {
+      document.title = `${post.title} · Su777 的博客`
+    }
+    return () => {
+      document.title = "Su777 的博客 · Su777's Blog"
+    }
+  }, [post])
+
   const { headings, activeId } = useToc(articleRef, post?.content ?? '')
+  const { loggedIn } = useAuth()
 
   function jumpTo(targetId: string) {
     const el = document.getElementById(targetId)
@@ -79,60 +91,78 @@ export default function PostDetailPage() {
     <div className="max-w-5xl mx-auto px-6 py-10">
       <Link
         to="/"
-        className="inline-flex items-center gap-1.5 font-mono text-xs text-muted hover:text-clay transition-colors mb-8"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-sm
+          bg-green-600 hover:bg-green-700 text-white rounded transition-colors mb-8"
       >
-        <ArrowLeft size={14} />
+        <ArrowLeft size={13} />
         返回列表
       </Link>
 
       <div className="flex gap-12">
         <article className="flex-1 min-w-0">
-          {/* 文章头部 */}
-          <header className="mb-10 animate-fade-in">
-            <h1 className="font-display font-bold text-4xl md:text-5xl text-ink leading-tight mb-4">
+          {/* 文章头部（洛谷风格） */}
+          <header className="mb-8 animate-fade-in">
+            <h1 className="font-article font-bold text-3xl md:text-4xl text-ink leading-[1.3] mb-4">
+              {!post.public && <span className="mr-2">🔒</span>}
               {post.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-3">
-              <time className="font-mono text-sm text-muted">
-                {formatDate(post.created_at)}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
+              <span className="font-article">
+                作者 <span className="text-ink">Su777</span>
+              </span>
+              <span className="text-line">|</span>
+              <time className="font-article">
+                发布时间 {formatDate(post.created_at)}
               </time>
               {post.updated_at !== post.created_at && (
-                <span className="font-mono text-sm text-muted">
-                  · 更新于 {formatDate(post.updated_at)}
-                </span>
+                <>
+                  <span className="text-line">|</span>
+                  <time className="font-article">
+                    更新于 {formatDate(post.updated_at)}
+                  </time>
+                </>
               )}
-              {post.tags.map((t) => (
-                <span key={t} className="tag-chip">
-                  #{t}
-                </span>
-              ))}
             </div>
+            {(post.category || post.tags.length > 0) && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {post.category && (
+                  <span className="tag-chip tag-category">
+                    {post.category}
+                  </span>
+                )}
+                {post.tags.map((t) => (
+                  <span key={t} className="tag-chip tag-algo">
+                    #{t}
+                  </span>
+                ))}
+              </div>
+            )}
+            {loggedIn && (
+              <div className="flex items-center gap-2 mt-4">
+                <Link
+                  to={`/posts/${post.id}/edit`}
+                  className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-sm
+                    bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                >
+                  <Pencil size={13} />
+                  编辑
+                </Link>
+                <button
+                  onClick={handleDelete}
+                  className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-sm
+                    bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                >
+                  <Trash2 size={13} />
+                  删除
+                </button>
+              </div>
+            )}
             <div className="border-t border-line mt-6" />
           </header>
 
           {/* 正文 */}
           <div ref={articleRef}>
             <MarkdownRenderer content={post.content} />
-          </div>
-
-          {/* 操作栏 */}
-          <div className="flex items-center gap-3 mt-16 pt-6 border-t border-line">
-            <Link
-              to={`/posts/${post.id}/edit`}
-              className="flex items-center gap-1.5 px-4 py-2 font-mono text-sm
-                border border-line text-ink/70 rounded-md hover:border-clay hover:text-clay transition-colors"
-            >
-              <Pencil size={14} />
-              编辑
-            </Link>
-            <button
-              onClick={handleDelete}
-              className="flex items-center gap-1.5 px-4 py-2 font-mono text-sm
-                border border-line text-ink/70 rounded-md hover:border-clay hover:text-clay transition-colors"
-            >
-              <Trash2 size={14} />
-              删除
-            </button>
           </div>
         </article>
 

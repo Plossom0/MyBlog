@@ -5,6 +5,8 @@ export interface PostMeta {
   title: string
   excerpt: string | null
   cover_image_url: string | null
+  category: string | null
+  public: boolean
   created_at: string
   updated_at: string
   tags: string[]
@@ -23,11 +25,17 @@ export interface TagWithCount {
   count: number
 }
 
+export interface CategoryWithCount {
+  name: string
+  count: number
+}
+
 export interface FrontmatterData {
   title?: string
   tags?: string[]
   excerpt?: string
   cover_image_url?: string
+  category?: string
 }
 
 export interface CreatePostResponse {
@@ -40,4 +48,17 @@ export interface DeletePostResponse {
 
 export interface UploadImageResponse {
   url: string
+}
+
+// ============ 鉴权相关 ============
+
+export interface AuthStatus {
+  passwordSet: boolean
+  loggedIn: boolean
+  username: string | null
+}
+
+export interface LoginResponse {
+  token: string
+  username: string
 }

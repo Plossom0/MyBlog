@@ -8,15 +8,23 @@ dist-ssr
 .env
 .env.*
 
-# 数据库（SQLite，WAL 模式）
+# 数据库与数据文件（SQLite，WAL 模式）
 *.db
 *.db-journal
 *.db-shm
 *.db-wal
+data/*
+!data/.gitkeep
 
 # 上传内容（保留目录占位）
 uploads/*
 !uploads/.gitkeep
+
+# 备份文件
+backup/
+
+# 文档与说明（冗余文件，仅根目录）
+/*.md
 
 # 构建缓存
 *.tsbuildinfo

@@ -1,0 +1,115 @@
+/*
+  VS Code Light+ 风格高亮（基于 VS Code light_plus TextMate 配色）
+  核心区分（解决变量/类型/常量颜色过近）：
+    变量        #001080 深蓝（navy）
+    数据类型     #267F99 青（teal）
+    数值常量     #098658 绿
+    语言常量     #0000FF 蓝（true/false/nullptr，VS Code 行为）
+    关键字       #0000FF 蓝
+    函数名       #795E26 金棕
+    字符串       #A31515 暗红
+    注释         #008000 绿（斜体）
+*/
+
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+}
+code.hljs {
+  padding: 3px 5px;
+}
+
+/* 基色 = 变量色：未分类的标识符（含变量引用）呈深蓝，对应 VS Code 语义高亮的 variable */
+.hljs {
+  color: #001080;
+  background: #ffffff;
+}
+
+/* 注释 */
+.hljs-comment,
+.hljs-quote {
+  color: #008000;
+  font-style: italic;
+}
+
+/* 关键字：int / return / class / if / public / #include 等 */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-doctag,
+.hljs-meta .hljs-keyword {
+  color: #0000ff;
+}
+
+/* 数据类型与类名：teal */
+.hljs-type,
+.hljs-built_in,
+.hljs-title.class_,
+.hljs-class .hljs-title,
+.hljs-section {
+  color: #267f99;
+}
+
+/* 函数名：金棕 */
+.hljs-title,
+.hljs-title.function_ {
+  color: #795e26;
+}
+
+/* 数值常量：green */
+.hljs-number {
+  color: #098658;
+}
+
+/* 语言常量 true/false/nullptr：blue（与关键字同色，VS Code 行为） */
+.hljs-literal {
+  color: #0000ff;
+}
+
+/* 字符串：dark red */
+.hljs-string,
+.hljs-regexp,
+.hljs-meta .hljs-string,
+.hljs-addition {
+  color: #a31515;
+}
+
+/* 变量 / 属性 / 参数：navy */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attr,
+.hljs-attribute,
+.hljs-params,
+.hljs-property,
+.hljs-symbol {
+  color: #001080;
+}
+
+/* 标签/名称（HTML/XML 用）：maroon */
+.hljs-name,
+.hljs-tag {
+  color: #800000;
+}
+
+/* 预处理器元信息基色 */
+.hljs-meta {
+  color: #000000;
+}
+
+/* 删除行 */
+.hljs-deletion {
+  color: #a31515;
+}
+
+/* 链接、符号 */
+.hljs-bullet,
+.hljs-link {
+  color: #0070c1;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: bold;
+}

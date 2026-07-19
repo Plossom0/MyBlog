@@ -10,7 +10,7 @@ export default {
         moss: '#3D5A4C',
         muted: '#8B847A',
         line: '#E6E0D6',
-        codebg: '#1E1B17',
+        codebg: '#F6F8FA',
       },
       fontFamily: {
         display: ['var(--font-sans)'],

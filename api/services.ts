@@ -24,6 +24,7 @@ export function parseMarkdownFile(raw: string): {
     excerpt: typeof data.excerpt === 'string' ? data.excerpt : undefined,
     cover_image_url:
       typeof data.cover_image_url === 'string' ? data.cover_image_url : undefined,
+    category: typeof data.category === 'string' ? data.category : undefined,
     tags: Array.isArray(data.tags)
       ? data.tags.map((t) => String(t)).filter(Boolean)
       : undefined,
@@ -40,6 +41,8 @@ export interface CreatePostInput {
   tags?: string[]
   excerpt?: string
   cover_image_url?: string
+  category?: string
+  public?: boolean
 }
 
 // 从正文首个 H1 提取标题，并将其从正文中移除避免重复
@@ -72,8 +75,10 @@ export function createPost(input: CreatePostInput): number {
   const excerpt = frontmatter.excerpt ?? input.excerpt ?? null
   const cover_image_url =
     frontmatter.cover_image_url ?? input.cover_image_url ?? null
+  const category = frontmatter.category ?? input.category ?? null
+  const publicFlag = input.public ?? true
 
-  const id = insertPost({ title, content, excerpt, cover_image_url })
+  const id = insertPost({ title, content, excerpt, cover_image_url, category, public: publicFlag })
   syncPostTags(id, tags)
   return id
 }
@@ -84,6 +89,8 @@ export interface UpdatePostInput {
   tags: string[]
   excerpt?: string | null
   cover_image_url?: string | null
+  category?: string | null
+  public?: boolean
 }
 
 export function updatePostById(id: number, input: UpdatePostInput): boolean {
@@ -92,6 +99,8 @@ export function updatePostById(id: number, input: UpdatePostInput): boolean {
     content: input.content,
     excerpt: input.excerpt ?? null,
     cover_image_url: input.cover_image_url ?? null,
+    category: input.category ?? null,
+    public: input.public,
   })
   if (ok) syncPostTags(id, input.tags)
   return ok
@@ -110,6 +119,8 @@ export function getPostDetail(id: number): PostDetail | null {
     content: row.content,
     excerpt: row.excerpt,
     cover_image_url: row.cover_image_url,
+    category: row.category,
+    public: !!row.public,
     created_at: row.created_at,
     updated_at: row.updated_at,
     tags: getTagsForPost(row.id),
