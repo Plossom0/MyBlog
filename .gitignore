@@ -25,6 +25,7 @@ backup/
 
 # 文档与说明（冗余文件，仅根目录）
 /*.md
+!README.md
 
 # 构建缓存
 *.tsbuildinfo
