@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown'
+import { memo } from 'react'
 import remarkMath from 'remark-math'
 import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
@@ -7,11 +8,7 @@ import rehypeSlug from 'rehype-slug'
 
 // 默认使用 highlight.js 的 common 语言包（含 cpp/c/javascript/typescript/python/java/bash/json 等）
 // detect:true 让没有标语言的代码块自动识别；aliases 补充 C++ 等常见别名
-export default function MarkdownRenderer({
-  content,
-}: {
-  content: string
-}) {
+function MarkdownRendererBase({ content }: { content: string }) {
   return (
     <div className="prose-blog">
       <ReactMarkdown
@@ -42,3 +39,7 @@ export default function MarkdownRenderer({
     </div>
   )
 }
+
+// memo：content 不变时跳过昂贵的 markdown 重新解析（避免表单其它状态变化导致卡顿）
+const MarkdownRenderer = memo(MarkdownRendererBase)
+export default MarkdownRenderer

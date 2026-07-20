@@ -160,6 +160,18 @@ export default function PostDetailPage() {
             <div className="border-t border-line mt-6" />
           </header>
 
+          {/* 摘要高亮框 */}
+          {post.excerpt && (
+            <div className="mb-8 rounded-r-lg border-l-4 border-clay bg-clay/5 px-5 py-4">
+              <p className="font-mono text-xs text-clay/80 uppercase tracking-wider mb-1.5">
+                摘要
+              </p>
+              <p className="font-serif text-base text-ink/80 leading-relaxed">
+                {post.excerpt}
+              </p>
+            </div>
+          )}
+
           {/* 正文 */}
           <div ref={articleRef}>
             <MarkdownRenderer content={post.content} />
