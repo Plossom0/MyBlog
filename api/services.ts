@@ -138,7 +138,7 @@ export function ensureUploadDir(): void {
   }
 }
 
-export function saveImage(file: UploadedFile): string {
+export function saveImage(file: Express.Multer.File): string {
   ensureUploadDir()
   if (!ALLOWED_MIME.includes(file.mimetype)) {
     throw new Error(`不支持的图片类型: ${file.mimetype}`)
