@@ -39,7 +39,7 @@ export default function Layout() {
               </div>
             ) : (
               <img
-                src="/uploads/avatar.png"
+                src="/res/avatar.png"
                 alt="Su777"
                 onError={() => setAvatarError(true)}
                 className="w-10 h-10 rounded-full object-cover border border-line group-hover:border-clay transition-colors"
