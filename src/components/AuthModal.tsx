@@ -76,11 +76,11 @@ export default function AuthModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm bg-paper border border-line rounded-lg shadow-xl animate-fade-in"
+        className="w-full max-w-sm bg-surface border border-line rounded-lg shadow-xl animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-line">
@@ -96,7 +96,7 @@ export default function AuthModal({
           </div>
           <button
             onClick={onClose}
-            className="text-muted hover:text-ink transition-colors"
+            className="text-muted hover:text-ink transition-colors cursor-pointer"
             aria-label="关闭"
           >
             <X size={18} />
@@ -105,13 +105,13 @@ export default function AuthModal({
 
         <form onSubmit={handleSubmit} className="px-5 py-5 space-y-4">
           {isSetup && (
-            <p className="font-mono text-xs text-muted leading-relaxed">
+            <p className="font-mono text-sm text-muted leading-relaxed">
               首次使用：设置管理员用户名和密码。密码以 MD5 形式存储于后端，不会保存明文。
             </p>
           )}
 
           <div>
-            <label className="block font-mono text-xs text-muted mb-1.5">
+            <label className="block font-mono text-sm text-muted mb-1.5">
               用户名
             </label>
             <input
@@ -126,7 +126,7 @@ export default function AuthModal({
           </div>
 
           <div>
-            <label className="block font-mono text-xs text-muted mb-1.5">
+            <label className="block font-mono text-sm text-muted mb-1.5">
               密码
             </label>
             <input
@@ -141,7 +141,7 @@ export default function AuthModal({
 
           {isSetup && (
             <div>
-              <label className="block font-mono text-xs text-muted mb-1.5">
+              <label className="block font-mono text-sm text-muted mb-1.5">
                 确认密码
               </label>
               <input
@@ -156,7 +156,7 @@ export default function AuthModal({
           )}
 
           {error && (
-            <p className="font-mono text-xs text-red-600">{error}</p>
+            <p className="font-mono text-sm text-accent">{error}</p>
           )}
 
           <button

@@ -45,19 +45,19 @@ export default function PostCard({
   const q = query?.trim() || ''
   return (
     <article
-      className="group animate-fade-up border-b border-line/60 last:border-0 pb-8 mb-8"
+      className="group animate-fade-up border-b border-line/60 last:border-0 border-l-2 border-l-transparent hover:border-l-clay hover:bg-surface/30 pb-8 mb-8 transition-colors duration-200 cursor-pointer"
       style={{ animationDelay: `${Math.min(index * 70, 560)}ms` }}
     >
       <Link to={`/posts/${post.id}`} className="block">
         <div className="flex items-baseline gap-3 mb-2">
-          <span className="font-article text-sm text-muted">
+          <span className="font-mono text-sm text-muted">
             #{String(post.id).padStart(3, '0')}
           </span>
-          <time className="font-article text-sm text-muted">
+          <time className="font-mono text-sm text-muted">
             {formatDate(post.created_at)}
           </time>
         </div>
-        <h2 className="font-article font-semibold text-2xl md:text-[1.75rem] text-ink leading-tight mb-3 group-hover:text-clay transition-colors duration-200">
+        <h2 className="font-display font-semibold text-2xl md:text-[1.75rem] text-ink leading-tight mb-3 group-hover:text-clay transition-colors duration-200">
           {!post.public && <span className="mr-1.5">🔒</span>}
           {q ? <Highlight text={post.title} query={q} /> : post.title}
         </h2>

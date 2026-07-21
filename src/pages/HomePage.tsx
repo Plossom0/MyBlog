@@ -90,10 +90,11 @@ export default function HomePage() {
     <div className="max-w-5xl mx-auto px-6 py-12 font-article">
       {/* 页头 */}
       <header className="mb-10 animate-fade-in">
-        <h1 className="font-article font-extrabold text-4xl md:text-5xl text-ink leading-none mb-3">
-          Su777 的博客
+        <h1 className="font-display font-extrabold text-4xl md:text-5xl text-ink leading-none mb-3">
+          <span className="text-clay mr-2">&gt;</span>Su777 的博客
         </h1>
-        <p className="font-article font-bold text-lg text-muted">
+        <div className="h-0.5 w-20 bg-clay mb-3" />
+        <p className="font-display font-bold text-lg text-muted">
           Su777's Blog
         </p>
       </header>
@@ -144,10 +145,10 @@ export default function HomePage() {
 function LoadingTables() {
   return (
     <div className="mb-10">
-      <div className="h-6 w-32 bg-line rounded mb-4 animate-pulse" />
+      <div className="h-6 w-32 bg-surface rounded mb-4 animate-pulse" />
       <div className="space-y-2">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-10 w-full bg-line/40 rounded animate-pulse" />
+          <div key={i} className="h-10 w-full bg-line/60 rounded animate-pulse" />
         ))}
       </div>
     </div>
@@ -157,7 +158,7 @@ function LoadingTables() {
 function EmptyState({ isSearching }: { isSearching: boolean }) {
   return (
     <div className="text-center py-20">
-      <p className="font-article text-2xl text-ink/40 mb-2">
+      <p className="font-display text-2xl text-ink/40 mb-2">
         {isSearching ? '未找到相关文章' : '这里还很安静'}
       </p>
       <p className="font-article text-muted">

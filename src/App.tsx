@@ -22,7 +22,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
     return (
       <div className="max-w-prose mx-auto px-6 py-20 text-center">
         <p className="font-display text-2xl text-clay mb-3">无权访问</p>
-        <p className="font-serif text-muted mb-6">
+        <p className="font-article text-muted mb-6">
           该页面仅超级管理员可访问，请先登录。
         </p>
         <Link to="/" className="font-mono text-sm text-muted hover:text-clay">

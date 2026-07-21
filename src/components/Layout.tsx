@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import { PenLine, BookOpen, LogIn, LogOut, ShieldCheck } from 'lucide-react'
+import { PenLine, BookOpen, LogIn, LogOut, ShieldCheck, Terminal, Sun, Moon } from 'lucide-react'
 import { useAuth } from '../utils/auth'
 import AuthModal from './AuthModal'
 
@@ -18,10 +18,28 @@ export default function Layout() {
     useAuth()
   const [authOpen, setAuthOpen] = useState(false)
 
-  // 启动时拉取鉴权状态（含 token 有效性校验）
+  // 主题切换
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof document !== 'undefined' && document.documentElement.classList.contains('light')) {
+      return 'light'
+    }
+    return 'dark'
+  })
+
   useEffect(() => {
     loadStatus()
   }, [loadStatus])
+
+  function toggleTheme() {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    if (next === 'light') {
+      document.documentElement.classList.add('light')
+    } else {
+      document.documentElement.classList.remove('light')
+    }
+    localStorage.setItem('theme', next)
+  }
 
   async function handleLogout() {
     await logout()
@@ -30,11 +48,12 @@ export default function Layout() {
 
   return (
     <div className="relative z-10 min-h-screen flex flex-col">
-      <header className="border-b border-line/60 backdrop-blur-sm bg-paper/85 sticky top-0 z-20">
+      {/* 玻璃态导航栏 */}
+      <header className="border-b border-line/60 backdrop-blur-xl bg-paper/70 sticky top-0 z-20">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             {avatarError ? (
-              <div className="w-10 h-10 rounded-full bg-clay/15 border border-line flex items-center justify-center font-display font-bold text-clay text-sm">
+              <div className="w-10 h-10 rounded-lg bg-clay/15 border border-clay/30 flex items-center justify-center font-display font-bold text-clay text-sm">
                 S
               </div>
             ) : (
@@ -42,14 +61,15 @@ export default function Layout() {
                 src="/res/avatar.png"
                 alt="Su777"
                 onError={() => setAvatarError(true)}
-                className="w-10 h-10 rounded-full object-cover border border-line group-hover:border-clay transition-colors"
+                className="w-10 h-10 rounded-lg object-cover border border-line group-hover:border-clay/60 transition-colors"
               />
             )}
             <div className="flex flex-col">
               <span className="font-title-zh font-bold text-xl text-ink tracking-tight leading-none group-hover:text-clay transition-colors">
                 Su777 的博客
               </span>
-              <span className="font-mono text-[10px] text-muted tracking-[0.15em] mt-0.5">
+              <span className="font-mono text-xs text-muted tracking-[0.15em] mt-0.5 flex items-center gap-1">
+                <Terminal size={10} className="text-clay/60" />
                 Su777's Blog
               </span>
             </div>
@@ -72,39 +92,41 @@ export default function Layout() {
               )}
             </nav>
 
-            {/* 右上角登录情况 */}
+            {/* 右上角：主题切换滑块 + 登录情况 */}
             <div className="h-6 w-px bg-line" />
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+
             {statusLoaded && loggedIn ? (
               <div className="flex items-center gap-2">
-                <span className="font-display font-bold text-[#9c3dcf] text-lg">
+                <span className="font-display font-bold text-accent text-lg leading-none">
                   {username}
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-[#9c3dcf] text-white font-mono text-xs font-bold">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-accent/15 text-accent font-mono text-xs font-bold border border-accent/30 leading-none">
                   root
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-md font-mono text-xs text-ink/60 hover:text-clay hover:bg-clay/5 transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-md font-mono text-sm text-muted hover:text-clay hover:bg-clay/10 transition-colors cursor-pointer"
                   title="登出"
                 >
-                  <LogOut size={13} />
+                  <LogOut size={14} />
                   登出
                 </button>
               </div>
             ) : statusLoaded && !passwordSet ? (
               <button
                 onClick={() => setAuthOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-clay text-paper font-mono text-xs hover:bg-clay/90 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-clay text-paper font-mono text-sm hover:bg-clay/80 transition-colors cursor-pointer"
               >
-                <ShieldCheck size={13} />
+                <ShieldCheck size={14} />
                 设置密码
               </button>
             ) : (
               <button
                 onClick={() => setAuthOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs text-ink/60 hover:text-clay hover:bg-clay/5 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-sm text-muted hover:text-clay hover:bg-clay/10 transition-colors cursor-pointer"
               >
-                <LogIn size={13} />
+                <LogIn size={14} />
                 管理员登录
               </button>
             )}
@@ -116,16 +138,16 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-line/60 mt-20">
+      <footer className="border-t border-line/60 mt-20 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-6 py-8 flex items-center justify-between">
-          <p className="font-mono text-xs text-muted">
+          <p className="font-mono text-sm text-muted">
             © {new Date().getFullYear()} Su777 的博客
           </p>
           <a
             href={HOME_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-display italic text-sm text-muted hover:text-clay transition-colors"
+            className="font-mono text-sm text-muted hover:text-clay transition-colors"
           >
             洛谷个人主页
           </a>
@@ -151,14 +173,35 @@ function NavItem({
   return (
     <Link
       to={to}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-mono tracking-wide transition-colors ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-mono tracking-wide transition-all duration-200 cursor-pointer ${
         active
-          ? 'text-clay bg-clay/10'
-          : 'text-ink/60 hover:text-ink hover:bg-ink/5'
+          ? 'text-clay bg-clay/10 border border-clay/30'
+          : 'text-muted hover:text-ink hover:bg-surface border border-transparent'
       }`}
     >
       {icon}
       {label}
     </Link>
+  )
+}
+
+function ThemeToggle({
+  theme,
+  onToggle,
+}: {
+  theme: 'dark' | 'light'
+  onToggle: () => void
+}) {
+  const isLight = theme === 'light'
+  return (
+    <button
+      onClick={onToggle}
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-mono tracking-wide transition-all duration-200 cursor-pointer text-muted hover:text-ink hover:bg-surface border border-transparent cursor-pointer"
+      title={isLight ? '切换到深色模式' : '切换到浅色模式'}
+      aria-label="切换主题"
+    >
+      {isLight ? <Sun size={15} /> : <Moon size={15} />}
+      {isLight ? '浅色模式' : '深色模式'}
+    </button>
   )
 }

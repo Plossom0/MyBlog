@@ -32,7 +32,7 @@ export default function UploadPage() {
         <h1 className="font-display font-bold text-3xl text-ink mb-2">
           写作
         </h1>
-        <p className="font-serif text-muted">
+        <p className="font-article text-muted">
           导入 md 文件或直接书写，支持代码高亮、LaTeX 公式与图片。
         </p>
       </header>

@@ -60,7 +60,7 @@ function parseFrontmatter(raw: string): {
 
 // 统一输入框样式：封闭长方形边框，聚焦时蓝色高亮
 const inputCls =
-  'border border-line rounded-md px-3 py-2 font-serif text-base text-ink bg-paper placeholder:text-muted/40 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-colors'
+  'border border-line rounded-md px-3 py-2 font-article text-base text-ink bg-surface placeholder:text-muted/40 focus:border-clay focus:outline-none focus:ring-1 focus:ring-clay/30 transition-colors'
 
 export default function PostForm({
   initialTitle = '',
@@ -316,7 +316,7 @@ export default function PostForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* 标题 */}
       <div className="flex items-center gap-4">
-        <label className="w-16 shrink-0 font-serif text-sm font-medium text-ink/70">
+        <label className="w-16 shrink-0 font-article text-sm font-medium text-ink/70">
           标题
         </label>
         <input
@@ -330,7 +330,7 @@ export default function PostForm({
 
       {/* 摘要 */}
       <div className="flex items-center gap-4">
-        <label className="w-16 shrink-0 font-serif text-sm font-medium text-ink/70">
+        <label className="w-16 shrink-0 font-article text-sm font-medium text-ink/70">
           摘要
         </label>
         <input
@@ -345,7 +345,7 @@ export default function PostForm({
       {/* 标签：输入框 + 下方 chips（深蓝色，与首页一致） */}
       <div>
         <div className="flex items-center gap-4">
-          <label className="w-16 shrink-0 font-serif text-sm font-medium text-ink/70">
+          <label className="w-16 shrink-0 font-article text-sm font-medium text-ink/70">
             标签
           </label>
           <input
@@ -368,7 +368,7 @@ export default function PostForm({
                 <button
                   type="button"
                   onClick={() => removeTag(t)}
-                  className="inline-flex items-center justify-center -mr-0.5
+                  className="inline-flex items-center justify-center -mr-0.5 cursor-pointer
                     hover:opacity-70 transition-opacity"
                   aria-label={`删除标签 ${t}`}
                 >
@@ -382,7 +382,7 @@ export default function PostForm({
 
       {/* 分类：自定义下拉单选（含计数）+ 删除 + 新增 */}
       <div className="flex items-center gap-4">
-        <label className="w-16 shrink-0 font-serif text-sm font-medium text-ink/70">
+        <label className="w-16 shrink-0 font-article text-sm font-medium text-ink/70">
           分类
         </label>
         <div className="relative flex-1" ref={catDropdownRef}>
@@ -392,21 +392,21 @@ export default function PostForm({
               setCatOpen((v) => !v)
               setShowCatInput(false)
             }}
-            className={`w-full ${inputCls} flex items-center justify-between text-left`}
+            className={`w-full ${inputCls} flex items-center justify-between text-left cursor-pointer`}
           >
             <span>{category || '未分类'}</span>
             <ChevronDown size={16} className="text-muted shrink-0" />
           </button>
           {catOpen && (
-            <div className="absolute z-20 mt-1 w-full bg-paper border border-line rounded-md shadow-lg max-h-64 overflow-auto scroll-ink">
+            <div className="absolute z-20 mt-1 w-full bg-surface border border-line rounded-md shadow-lg max-h-64 overflow-auto scroll-ink">
               <button
                 type="button"
                 onClick={() => {
                   setCategory('')
                   setCatOpen(false)
                 }}
-                className="w-full flex items-center justify-between px-3 py-2 text-left
-                  font-serif text-base text-ink hover:bg-ink/5 transition-colors"
+                className="w-full flex items-center justify-between px-3 py-2 text-left cursor-pointer
+                  font-article text-base text-ink hover:bg-surface transition-colors"
               >
                 <span>未分类</span>
               </button>
@@ -415,7 +415,7 @@ export default function PostForm({
                 return (
                   <div
                     key={o}
-                    className="group flex items-center justify-between px-3 py-2 hover:bg-ink/5 transition-colors"
+                    className="group flex items-center justify-between px-3 py-2 hover:bg-surface transition-colors"
                   >
                     <button
                       type="button"
@@ -424,7 +424,7 @@ export default function PostForm({
                         setCatOpen(false)
                         setConfirmingCat(null)
                       }}
-                      className="flex-1 text-left font-serif text-base text-ink"
+                      className="flex-1 text-left cursor-pointer font-article text-base text-ink"
                     >
                       {o}{' '}
                       <span className="text-muted text-sm">({count})</span>
@@ -434,7 +434,7 @@ export default function PostForm({
                         <button
                           type="button"
                           onClick={() => deleteCategoryOption(o)}
-                          className="ml-2 text-xs font-mono text-clay hover:underline"
+                          className="ml-2 text-sm font-mono text-clay hover:underline cursor-pointer"
                         >
                           确认删除
                         </button>
@@ -442,7 +442,7 @@ export default function PostForm({
                         <button
                           type="button"
                           onClick={() => setConfirmingCat(o)}
-                          className="ml-2 text-muted/50 hover:text-clay transition-colors"
+                          className="ml-2 text-muted/50 hover:text-clay transition-colors cursor-pointer"
                           aria-label={`删除分类 ${o}`}
                         >
                           <X size={14} />
@@ -461,7 +461,7 @@ export default function PostForm({
                     placeholder="新分类名，回车确认"
                     autoFocus
                     className="flex-1 bg-transparent border-b border-line py-1
-                      font-serif text-base text-ink placeholder:text-muted/40
+                      font-article text-base text-ink placeholder:text-muted/40
                       focus:outline-none focus:border-clay transition-colors"
                   />
                 </div>
@@ -469,8 +469,8 @@ export default function PostForm({
                 <button
                   type="button"
                   onClick={() => setShowCatInput(true)}
-                  className="w-full flex items-center gap-1.5 px-3 py-2
-                    font-serif text-sm text-muted hover:text-clay transition-colors border-t border-line"
+                  className="w-full flex items-center gap-1.5 px-3 py-2 cursor-pointer
+                    font-article text-sm text-muted hover:text-clay transition-colors border-t border-line"
                 >
                   <Plus size={14} /> 新增分类
                 </button>
@@ -487,12 +487,12 @@ export default function PostForm({
             type="checkbox"
             checked={isPublic}
             onChange={(e) => setIsPublic(e.target.checked)}
-            className="w-4 h-4 accent-[#9c3dcf]"
+            className="w-4 h-4 accent-clay"
           />
-          <span className="font-serif text-sm font-medium text-ink/70">
+          <span className="font-article text-sm font-medium text-ink/70">
             公众可见
           </span>
-          <span className="font-serif text-xs text-muted">
+          <span className="font-article text-sm text-muted">
             （取消勾选后仅登录用户可查看）
           </span>
         </label>
@@ -503,7 +503,7 @@ export default function PostForm({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-mono
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-mono cursor-pointer
             border border-line text-ink/70 rounded-md hover:border-clay hover:text-clay transition-colors"
         >
           <FileUp size={14} />
@@ -519,7 +519,7 @@ export default function PostForm({
         <button
           type="button"
           onClick={() => imageInputRef.current?.click()}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-mono
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-mono cursor-pointer
             border border-line text-ink/70 rounded-md hover:border-clay hover:text-clay transition-colors"
         >
           <ImagePlus size={14} />
@@ -532,29 +532,29 @@ export default function PostForm({
           onChange={handleUploadImage}
           className="hidden"
         />
-        {info && <span className="font-mono text-xs text-moss">{info}</span>}
+        {info && <span className="font-mono text-sm text-moss">{info}</span>}
       </div>
 
       {/* 正文：两栏 Markdown 编辑器（左源码 / 右预览，同步滚动） */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="block font-serif text-sm font-medium text-ink/70">
+          <label className="block font-article text-sm font-medium text-ink/70">
             正文（Markdown）
           </label>
-          <span className="font-mono text-[10px] text-muted tracking-wider">
+          <span className="font-mono text-xs text-muted tracking-wider">
             源码 / 预览
           </span>
         </div>
-        <div className="flex h-[calc(100vh-360px)] min-h-[500px] border border-line rounded-lg overflow-hidden bg-paper">
+        <div className="flex h-[calc(100vh-360px)] min-h-[500px] border border-line rounded-lg overflow-hidden bg-surface/30">
           <textarea
             ref={editorRef}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onScroll={() => syncScroll('editor')}
             placeholder="在此书写或导入 md 文件… 支持代码块、LaTeX 公式、图片。"
-            className="w-1/2 h-full min-h-0 bg-ink/[0.02] p-4 resize-none
+            className="w-1/2 h-full min-h-0 bg-surface/50 p-4 resize-none
               font-mono text-sm text-ink leading-relaxed
-              focus:outline-none focus:bg-paper transition-colors scroll-ink
+              focus:outline-none focus:bg-surface transition-colors scroll-ink
               border-r border-line"
             spellCheck={false}
           />
@@ -566,7 +566,7 @@ export default function PostForm({
             {content.trim() ? (
               <MarkdownRenderer content={content} />
             ) : (
-              <p className="text-muted/50 text-sm font-serif italic">
+              <p className="text-muted/50 text-sm font-article italic">
                 预览区…
               </p>
             )}
@@ -583,7 +583,7 @@ export default function PostForm({
       <button
         type="submit"
         disabled={submitting}
-        className="flex items-center gap-2 px-6 py-2.5 font-mono text-sm tracking-wide
+        className="flex items-center gap-2 px-6 py-2.5 font-mono text-sm tracking-wide cursor-pointer
           bg-clay text-paper rounded-md hover:bg-clay/90 disabled:opacity-50
           transition-colors"
       >

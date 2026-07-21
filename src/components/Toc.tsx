@@ -20,7 +20,7 @@ export default function Toc({
   if (headings.length === 0) return null
   return (
     <nav className="text-sm">
-      <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted mb-3">
+      <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted mb-3">
         目录
       </p>
       <ul className="space-y-1 border-l border-line">
@@ -28,12 +28,12 @@ export default function Toc({
           <li key={h.id}>
             <button
               onClick={() => onJump(h.id)}
-              className={`block text-left leading-snug py-1 -ml-px border-l-2 transition-colors ${
+              className={`block text-left leading-snug py-1 -ml-px border-l-2 transition-colors cursor-pointer ${
                 indentMap[h.level] ?? 'pl-4'
               } ${
                 activeId === h.id
                   ? 'border-clay text-clay font-medium'
-                  : 'border-transparent text-muted hover:text-ink hover:border-line'
+                  : 'border-transparent text-muted hover:text-ink hover:border-clay/40'
               }`}
             >
               <span dangerouslySetInnerHTML={{ __html: h.html }} />

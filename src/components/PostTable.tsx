@@ -13,11 +13,11 @@ export default function PostTable({
 
   return (
     <div className="mb-10">
-      <h2 className="font-article font-bold text-xl text-ink mb-3 flex items-center gap-2">
+      <h2 className="font-display font-bold text-xl text-ink mb-3 flex items-center gap-2">
         {title}
         <span className="text-sm font-normal text-muted">({posts.length})</span>
       </h2>
-      <div className="overflow-x-auto scroll-ink">
+      <div className="overflow-x-auto scroll-ink border border-line rounded-lg overflow-hidden">
         <table className="w-full table-fixed border-collapse">
           <colgroup>
             <col className="w-20" />
@@ -27,7 +27,7 @@ export default function PostTable({
             <col className="w-[400px]" />
           </colgroup>
           <thead>
-            <tr className="border-b-2 border-line">
+            <tr className="border-b-2 border-line bg-surface">
               <th className="text-left px-3 py-2 font-article text-sm font-medium text-muted">编号</th>
               <th className="text-left px-3 py-2 font-article text-sm font-medium text-muted">标题</th>
               <th className="text-left px-3 py-2 font-article text-sm font-medium text-muted">创建日期</th>
@@ -37,7 +37,7 @@ export default function PostTable({
           </thead>
           <tbody>
             {posts.map((post) => (
-              <tr key={post.id} className="border-b border-line/60 hover:bg-codebg/50 transition-colors">
+              <tr key={post.id} className="border-b border-line/60 hover:bg-surface/50 transition-colors cursor-pointer">
                 <td className="px-3 py-2.5 font-article text-sm text-muted truncate">
                   #{String(post.id).padStart(3, '0')}
                 </td>
@@ -46,7 +46,7 @@ export default function PostTable({
                     to={`/posts/${post.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-article text-sm text-ink hover:text-clay transition-colors"
+                    className="font-display text-sm text-ink hover:text-clay transition-colors"
                   >
                     {!post.public && <span className="mr-1">🔒</span>}
                     {post.title}

@@ -64,8 +64,8 @@ export default function PostDetailPage() {
     return (
       <div className="max-w-prose mx-auto px-6 py-20">
         <div className="animate-pulse space-y-4">
-          <div className="h-10 w-2/3 bg-line rounded" />
-          <div className="h-4 w-40 bg-line/60 rounded" />
+          <div className="h-10 w-2/3 bg-surface rounded" />
+          <div className="h-4 w-40 bg-surface/60 rounded" />
           <div className="h-4 w-full bg-line/40 rounded mt-8" />
           <div className="h-4 w-full bg-line/40 rounded" />
           <div className="h-4 w-5/6 bg-line/40 rounded" />
@@ -92,7 +92,8 @@ export default function PostDetailPage() {
       <Link
         to="/"
         className="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-sm
-          bg-green-600 hover:bg-green-700 text-white rounded transition-colors mb-8"
+          bg-surface border border-line text-ink hover:border-clay/50 hover:text-clay
+          rounded transition-colors mb-8 cursor-pointer"
       >
         <ArrowLeft size={13} />
         返回列表
@@ -102,7 +103,7 @@ export default function PostDetailPage() {
         <article className="flex-1 min-w-0">
           {/* 文章头部（洛谷风格） */}
           <header className="mb-8 animate-fade-in">
-            <h1 className="font-article font-bold text-3xl md:text-4xl text-ink leading-[1.3] mb-4">
+            <h1 className="font-display font-bold text-3xl md:text-4xl text-ink leading-[1.3] mb-4">
               {!post.public && <span className="mr-2">🔒</span>}
               {post.title}
             </h1>
@@ -110,13 +111,13 @@ export default function PostDetailPage() {
               <span className="font-article">
                 作者 <span className="text-ink">Su777</span>
               </span>
-              <span className="text-line">|</span>
+              <span className="text-line/60">|</span>
               <time className="font-article">
                 发布时间 {formatDate(post.created_at)}
               </time>
               {post.updated_at !== post.created_at && (
                 <>
-                  <span className="text-line">|</span>
+                  <span className="text-line/60">|</span>
                   <time className="font-article">
                     更新于 {formatDate(post.updated_at)}
                   </time>
@@ -142,7 +143,8 @@ export default function PostDetailPage() {
                 <Link
                   to={`/posts/${post.id}/edit`}
                   className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-sm
-                    bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                    bg-clay/15 border border-clay/40 text-clay hover:bg-clay/25
+                    rounded transition-colors cursor-pointer"
                 >
                   <Pencil size={13} />
                   编辑
@@ -150,7 +152,8 @@ export default function PostDetailPage() {
                 <button
                   onClick={handleDelete}
                   className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-sm
-                    bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                    bg-accent/15 border border-accent/40 text-accent hover:bg-accent/25
+                    rounded transition-colors cursor-pointer"
                 >
                   <Trash2 size={13} />
                   删除
@@ -162,11 +165,11 @@ export default function PostDetailPage() {
 
           {/* 摘要高亮框 */}
           {post.excerpt && (
-            <div className="mb-8 rounded-r-lg border-l-4 border-clay bg-clay/5 px-5 py-4">
-              <p className="font-mono text-xs text-clay/80 uppercase tracking-wider mb-1.5">
+            <div className="mb-8 rounded-r-lg border-l-4 border-clay/60 bg-clay/5 px-5 py-4">
+              <p className="font-mono text-sm text-clay uppercase tracking-wider mb-1.5">
                 摘要
               </p>
-              <p className="font-serif text-base text-ink/80 leading-relaxed">
+              <p className="font-article text-base text-ink/80 leading-relaxed">
                 {post.excerpt}
               </p>
             </div>

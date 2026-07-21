@@ -1,14 +1,6 @@
 /*
-  VS Code Light+ 风格高亮（基于 VS Code light_plus TextMate 配色）
-  核心区分（解决变量/类型/常量颜色过近）：
-    变量        #001080 深蓝（navy）
-    数据类型     #267F99 青（teal）
-    数值常量     #098658 绿
-    语言常量     #0000FF 蓝（true/false/nullptr，VS Code 行为）
-    关键字       #0000FF 蓝
-    函数名       #795E26 金棕
-    字符串       #A31515 暗红
-    注释         #008000 绿（斜体）
+  代码高亮主题（支持深/浅模式切换）
+  使用 CSS 变量在 index.css 中定义，深色为 VS Code Dark+，浅色为 VS Code Light+
 */
 
 pre code.hljs {
@@ -20,61 +12,61 @@ code.hljs {
   padding: 3px 5px;
 }
 
-/* 基色 = 变量色：未分类的标识符（含变量引用）呈深蓝，对应 VS Code 语义高亮的 variable */
+/* 基色 */
 .hljs {
-  color: #001080;
-  background: #ffffff;
+  color: var(--hljs-base);
+  background: transparent;
 }
 
 /* 注释 */
 .hljs-comment,
 .hljs-quote {
-  color: #008000;
+  color: var(--hljs-comment);
   font-style: italic;
 }
 
-/* 关键字：int / return / class / if / public / #include 等 */
+/* 关键字 */
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-doctag,
 .hljs-meta .hljs-keyword {
-  color: #0000ff;
+  color: var(--hljs-keyword);
 }
 
-/* 数据类型与类名：teal */
+/* 数据类型与类名 */
 .hljs-type,
 .hljs-built_in,
 .hljs-title.class_,
 .hljs-class .hljs-title,
 .hljs-section {
-  color: #267f99;
+  color: var(--hljs-type);
 }
 
-/* 函数名：金棕 */
+/* 函数名 */
 .hljs-title,
 .hljs-title.function_ {
-  color: #795e26;
+  color: var(--hljs-function);
 }
 
-/* 数值常量：green */
+/* 数值常量 */
 .hljs-number {
-  color: #098658;
+  color: var(--hljs-number);
 }
 
-/* 语言常量 true/false/nullptr：blue（与关键字同色，VS Code 行为） */
+/* 语言常量 */
 .hljs-literal {
-  color: #0000ff;
+  color: var(--hljs-literal);
 }
 
-/* 字符串：dark red */
+/* 字符串 */
 .hljs-string,
 .hljs-regexp,
 .hljs-meta .hljs-string,
 .hljs-addition {
-  color: #a31515;
+  color: var(--hljs-string);
 }
 
-/* 变量 / 属性 / 参数：navy */
+/* 变量 / 属性 / 参数 */
 .hljs-variable,
 .hljs-template-variable,
 .hljs-attr,
@@ -82,29 +74,29 @@ code.hljs {
 .hljs-params,
 .hljs-property,
 .hljs-symbol {
-  color: #001080;
+  color: var(--hljs-variable);
 }
 
-/* 标签/名称（HTML/XML 用）：maroon */
+/* 标签/名称 */
 .hljs-name,
 .hljs-tag {
-  color: #800000;
+  color: var(--hljs-tag);
 }
 
-/* 预处理器元信息基色 */
+/* 预处理器元信息 */
 .hljs-meta {
-  color: #000000;
+  color: var(--hljs-meta);
 }
 
 /* 删除行 */
 .hljs-deletion {
-  color: #a31515;
+  color: var(--hljs-deletion);
 }
 
 /* 链接、符号 */
 .hljs-bullet,
 .hljs-link {
-  color: #0070c1;
+  color: var(--hljs-link);
 }
 
 .hljs-emphasis {

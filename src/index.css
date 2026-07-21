@@ -2,30 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== CSS 变量：放在 @layer 外部确保正确层叠覆盖 ===== */
+:root {
+  color-scheme: dark;
+  --font-sans:
+    "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+  --font-article:
+    "Inter", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", Arial,
+    sans-serif;
+
+  /* 深色模式（默认） */
+  --color-paper: 10 10 11;
+  --color-surface: 24 24 27;
+  --color-ink: 250 250 250;
+  --color-clay: 6 182 212;
+  --color-moss: 16 185 129;
+  --color-accent: 236 72 153;
+  --color-muted: 161 161 170;
+  --color-line: 39 39 42;
+  --color-codebg: 24 24 27;
+  --color-link: 6 182 212;
+  --color-code-text: 103 232 249;
+
+  --hljs-base: #9CDCFE;
+  --hljs-comment: #6A9955;
+  --hljs-keyword: #569CD6;
+  --hljs-type: #4EC9B0;
+  --hljs-function: #DCDCAA;
+  --hljs-number: #B5CEA8;
+  --hljs-literal: #569CD6;
+  --hljs-string: #CE9178;
+  --hljs-variable: #9CDCFE;
+  --hljs-tag: #569CD6;
+  --hljs-meta: #9B9B9B;
+  --hljs-deletion: #F44747;
+  --hljs-link: #4FC1FF;
+
+  --bg-grid: rgba(6, 182, 212, 0.03);
+  --bg-glow: rgba(6, 182, 212, 0.08);
+}
+
+html.light {
+  color-scheme: light;
+  --color-paper: 250 250 250;
+  --color-surface: 255 255 255;
+  --color-ink: 24 24 27;
+  --color-clay: 8 145 178;
+  --color-moss: 5 150 105;
+  --color-accent: 219 39 119;
+  --color-muted: 107 114 128;
+  --color-line: 229 231 235;
+  --color-codebg: 243 244 246;
+  --color-link: 8 145 178;
+  --color-code-text: 155 39 99;
+
+  --hljs-base: #001080;
+  --hljs-comment: #008000;
+  --hljs-keyword: #0000FF;
+  --hljs-type: #267F99;
+  --hljs-function: #795E26;
+  --hljs-number: #098658;
+  --hljs-literal: #0000FF;
+  --hljs-string: #A31515;
+  --hljs-variable: #001080;
+  --hljs-tag: #800000;
+  --hljs-meta: #000000;
+  --hljs-deletion: #A31515;
+  --hljs-link: #0070C1;
+
+  --bg-grid: rgba(8, 145, 178, 0.04);
+  --bg-glow: rgba(8, 145, 178, 0.04);
+}
+
 @layer base {
-  :root {
-    --font-sans:
-      "Inter", "Roboto", "Google Sans", system-ui, -apple-system,
-      BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei",
-      sans-serif;
-    --font-mono:
-      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      monospace;
-    /* 洛谷风格正文字体栈：优先苹方/微软雅黑等中文无衬线 */
-    --font-article:
-      "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-      "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", Arial,
-      sans-serif;
-    /* 洛谷链接蓝 */
-    --color-link: #3498db;
-    /* 洛谷代码块文字色 */
-    --color-code-text: #c7254e;
-  }
 
   body {
     @apply bg-paper text-ink antialiased;
     font-family: var(--font-sans);
     font-feature-settings: 'liga' 1, 'kern' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   code,
@@ -33,19 +94,36 @@
     font-family: var(--font-mono);
   }
 
-  /* 纸质微噪点纹理背景 */
+  /* 科技风网格背景纹理 */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.4;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.18 0 0 0 0 0.15 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.6;
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* 顶部微光辐射 */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 400px;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(ellipse at center, var(--bg-glow) 0%, transparent 70%);
   }
 
   ::selection {
-    @apply bg-blue-200 text-ink;
+    @apply bg-clay/30 text-ink;
   }
 }
 
@@ -53,53 +131,56 @@
   /* 自定义滚动条 */
   .scroll-ink::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
+  }
+  .scroll-ink::-webkit-scrollbar-track {
+    background: transparent;
   }
   .scroll-ink::-webkit-scrollbar-thumb {
     @apply bg-line rounded-full;
   }
   .scroll-ink::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted;
+    @apply bg-clay/50;
   }
 
-  /* 标签胶囊基础样式（不含颜色） */
+  /* 标签胶囊基础样式 */
   .tag-chip {
-    font-family: var(--font-article);
-    @apply inline-flex items-center px-2.5 py-0.5 text-sm tracking-wide
-      border rounded-full transition-colors duration-200;
+    font-family: var(--font-mono);
+    @apply inline-flex items-center px-2.5 py-1 text-sm tracking-wide
+      border rounded-full transition-all duration-200 cursor-pointer;
   }
-  /* 算法标签：深蓝色 */
+  /* 算法标签：青色 */
   .tag-algo {
-    @apply border-[#1e40af]/40 text-[#1e40af];
+    @apply border-clay/40 text-clay/90 bg-clay/5;
   }
   .tag-algo:hover {
-    @apply bg-[#1e40af] text-paper border-[#1e40af];
+    @apply bg-clay/20 text-clay border-clay;
   }
   .tag-algo-active {
-    @apply bg-[#1e40af] text-paper border-[#1e40af];
+    @apply bg-clay text-paper border-clay;
   }
-  /* 分类标签：紫色 */
+  /* 分类标签：粉紫色 */
   .tag-category {
-    @apply border-[#9c3dcf]/40 text-[#9c3dcf];
+    @apply border-accent/40 text-accent/90 bg-accent/5;
   }
   .tag-category:hover {
-    @apply bg-[#9c3dcf] text-paper border-[#9c3dcf];
+    @apply bg-accent/20 text-accent border-accent;
   }
   .tag-category-active {
-    @apply bg-[#9c3dcf] text-paper border-[#9c3dcf];
+    @apply bg-accent text-paper border-accent;
   }
 }
 
-/* 中文标题字体：优先 STZhongsong（华文中宋），回退到正文无衬线栈 */
+/* 中文标题字体 */
 .font-title-zh {
-  font-family: "STZhongsong", var(--font-sans);
+  font-family: "Exo", "PingFang SC", "Microsoft YaHei", var(--font-sans);
 }
 
-/* 洛谷风格文章字体 */
 .font-article {
   font-family: var(--font-article);
 }
 
-/* 摘要截断灰度淡出：限制两行，底部渐隐 */
+/* 摘要截断灰度淡出 */
 .excerpt-fade {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -109,7 +190,7 @@
   mask-image: linear-gradient(to bottom, black 55%, transparent);
 }
 
-/* ============ Markdown 正文排版（洛谷风格） ============ */
+/* ============ Markdown 正文排版 ============ */
 .prose-blog {
   font-family: var(--font-article);
   @apply text-ink leading-[1.7] text-[1rem];
@@ -120,13 +201,13 @@
   margin-top: 1rem;
 }
 
-/* 标题：洛谷风格，统一深色不加彩色 */
 .prose-blog h1,
 .prose-blog h2,
 .prose-blog h3,
 .prose-blog h4,
 .prose-blog h5,
 .prose-blog h6 {
+  font-family: "Exo", var(--font-sans);
   @apply font-bold mt-6 mb-3 leading-[1.3] text-ink;
   scroll-margin-top: 6rem;
 }
@@ -150,14 +231,14 @@
   @apply text-[0.85em] text-muted;
 }
 
-/* 链接：洛谷蓝 */
 .prose-blog a {
-  color: var(--color-link);
+  color: rgb(var(--color-link));
   text-decoration: none;
-  transition: color 0.15s;
+  transition: color 0.15s, text-shadow 0.15s;
 }
 .prose-blog a:hover {
   text-decoration: underline;
+  text-shadow: 0 0 8px rgba(var(--color-clay), 0.4);
 }
 
 .prose-blog p {
@@ -178,46 +259,42 @@
   @apply my-1 pl-1;
 }
 .prose-blog li::marker {
-  color: var(--color-link);
+  color: rgb(var(--color-link));
 }
 
-/* 引用块：洛谷风格，灰色左边框 */
 .prose-blog blockquote {
-  @apply border-l-4 border-line bg-codebg py-2 pl-4 pr-3 my-4 text-muted;
+  @apply border-l-4 border-clay/60 bg-clay/5 py-2 pl-4 pr-3 my-4 text-muted;
   font-style: normal;
 }
 .prose-blog blockquote p {
   @apply my-1;
 }
 
-/* 行内代码：洛谷风格，浅红文字 + 浅灰背景 */
 .prose-blog code {
   font-family: var(--font-mono);
   font-size: 0.875em;
-  color: var(--color-code-text);
-  @apply bg-codebg px-1.5 py-0.5 rounded;
+  color: rgb(var(--color-code-text));
+  @apply bg-codebg px-1.5 py-0.5 rounded border border-line;
 }
-/* 代码块：洛谷风格，浅色背景 + 边框 */
 .prose-blog pre {
-  @apply bg-codebg rounded-md p-4 my-4 overflow-x-auto text-[0.875rem] leading-[1.6]
+  @apply bg-codebg rounded-lg p-4 my-4 overflow-x-auto text-[0.875rem] leading-[1.6]
     border border-line;
   scroll-margin-top: 6rem;
 }
 .prose-blog pre code {
-  @apply bg-transparent p-0 rounded-none;
+  @apply bg-transparent p-0 rounded-none border-0;
   color: inherit;
   font-weight: 400;
 }
 
 .prose-blog img {
-  @apply rounded my-4 mx-auto max-w-full;
+  @apply rounded-lg my-4 mx-auto max-w-full border border-line;
 }
 
 .prose-blog hr {
   @apply border-line my-6;
 }
 
-/* 表格：洛谷风格，简洁边框 + 灰色表头 */
 .prose-blog table {
   @apply w-full my-4 border-collapse text-[0.95rem];
 }
@@ -226,13 +303,12 @@
   @apply border border-line px-3 py-2 text-left;
 }
 .prose-blog th {
-  @apply bg-codebg font-semibold text-ink;
+  @apply bg-surface font-semibold text-ink;
 }
 .prose-blog tr:nth-child(even) td {
-  @apply bg-codebg/50;
+  @apply bg-surface/50;
 }
 
-/* KaTeX 行内/块级公式微调 */
 .prose-blog .katex {
   font-size: 1.1em;
 }

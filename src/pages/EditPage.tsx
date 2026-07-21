@@ -52,9 +52,9 @@ export default function EditPage() {
     return (
       <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-32 bg-line rounded" />
-          <div className="h-10 w-2/3 bg-line rounded" />
-          <div className="h-64 w-full bg-line/60 rounded" />
+          <div className="h-8 w-32 bg-surface rounded" />
+          <div className="h-10 w-2/3 bg-surface rounded" />
+          <div className="h-64 w-full bg-surface/60 rounded" />
         </div>
       </div>
     )
@@ -78,7 +78,7 @@ export default function EditPage() {
       <Link
         to={`/posts/${post.id}`}
         className="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-sm
-          bg-green-600 hover:bg-green-700 text-white rounded transition-colors mb-8"
+          bg-surface border border-line text-ink hover:border-clay/50 hover:text-clay rounded transition-colors mb-8"
       >
         <ArrowLeft size={13} />
         返回文章
@@ -87,7 +87,7 @@ export default function EditPage() {
         <h1 className="font-display font-bold text-3xl text-ink mb-2">
           编辑 - {post.title}
         </h1>
-        <p className="font-serif text-muted">修改文章内容与元数据。</p>
+        <p className="font-article text-muted">修改文章内容与元数据。</p>
       </header>
       <PostForm
         initialTitle={post.title}
