@@ -44,8 +44,6 @@ export default function PostTable({
                 <td className="px-3 py-2.5 break-words">
                   <Link
                     to={`/posts/${post.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="font-display text-sm text-ink hover:text-clay transition-colors"
                   >
                     {!post.public && <span className="mr-1">🔒</span>}
